@@ -1,0 +1,42 @@
+/* Color palette:
+    rgb(216, 213, 235)  light gray
+    rgb(167, 164, 188)  dark gray
+    rgb(167, 216, 109)  light green
+    rgb(124, 190, 95)   medium green
+    rgb(82, 165, 81)    dark green
+
+    rgb(127, 130, 154)  medium gray
+    rgb(82, 96, 112)    darker gray
+    rgb(215, 236, 186)  lighter green
+    rgb(169, 200, 201)  soft blue
+    rgb(237, 230, 141)  beige
+    rgb(205, 243, 246)  baby blue
+    rgb(237, 245, 215)  barely white
+*/
+
+main { 
+    background-color: rgb(167, 216, 109); 
+    display: block;
+    text-align: start;
+}
+
+main > section {
+    background-color: rgb(82, 165, 81); 
+    width: auto;
+    display: flex; 
+    flex-wrap: wrap;
+
+}
+
+
+ main > section > p {
+    background-color: white;
+    width: 30%;
+    padding: 5px;
+    margin: 5px;
+}
+
+#cover {
+    height: 200px;
+    margin:auto;
+}

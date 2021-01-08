@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Inserir Anuncio</title>
+    <link rel="stylesheet" href="stylesheets/index.css">
+    <link rel="stylesheet" href="stylesheets/advertisement.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="javascripts/insertAd.js"></script>
+</head>
+
+<body>
+    <header> Adicionar Anuncio </header>
+    <main>
+
+        <h2>Título: <input type="text" id="title"></h2>
+        <h2>Categoria:
+            <select id="categories">
+                <option value="Produce">Produce</option>
+                <option value="Seeds">Seeds</option>
+                <option value="Plants">Plants</option>
+                <option value="Fertilizers">Fertilzers</option>
+            </select>
+        </h2>
+        <h2>Descrição: <input type="text" id="description"></h2>
+        <h2>Preço: <input type="number" id="price" min="0" max="10000"></h2>
+        <h2><input type="button" value="Adicionar" onclick="insertAd()"></h2>
+    </main>
+    <footer> FOOTER </footer>
+</body>
+
+</html>
