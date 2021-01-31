@@ -2,14 +2,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Anunciante</title>
+    <title>Seu Carrinho</title>
     <link rel="stylesheet" href="stylesheets/index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="javascripts/seller.js"></script>
+    <script src="javascripts/cart.js"></script>
 </head>
 
 <body>
-    <header> <h2>Perfil de</h2> <span id="sellerName"> </span></header>
+    <header id="title"><h2>Seu Carrinho</h2></header>
 
     <nav>
         <a href="index.html">Home</a>
@@ -19,9 +19,12 @@
         <p id="sessionUser">Signed in as <b>Johnny Test</b></p>
     </nav>
 
-    <h2>Anúncios:</h2>
-    <main id="ads">
+    <h2>Anúncios no Carrinho:</h2>
+    <main id="main">
     </main>
+    <div>
+        <input type="button" value="purchase" onclick="purchase()">
+    </div>
 
     <footer>GardenMarket</footer>
 </body>

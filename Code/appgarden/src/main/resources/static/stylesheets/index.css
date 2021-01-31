@@ -40,7 +40,7 @@ main {
 }
 
 footer {
-    background-color: rgb(169, 200, 201);
+    background-color: grey;
 }
 
 main > section {

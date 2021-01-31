@@ -8,22 +8,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "adcategories")
-public class AdCategory {
+@Table(name = "states")
+public class State {       // Gostaria que isso fosse um Enum
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "catg_id")
+    @Column(name = "state_id")
     private int id;
 
-    @Column(name = "catg_name")
+    @Column(name = "state_name")
     private String name;
 
-    public AdCategory() {}
-
-    public AdCategory(String name) {
-        this.name = name;
-    }
+    public State() {}
 
     public int getId() {
         return id;

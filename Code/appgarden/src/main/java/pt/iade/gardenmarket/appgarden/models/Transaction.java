@@ -1,6 +1,5 @@
 package pt.iade.gardenmarket.appgarden.models;
 
-import java.sql.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -9,8 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
@@ -24,19 +26,13 @@ public class Transaction {
 
     @OneToMany
     @JoinColumn(name = "item_id")
-    private List<TransactionItem> transactionItems;     // JsonIgnore comprador e ads? Seria informação desnecessária
+    @JsonIgnoreProperties({"transaction"})
+    private List<TransactionItem> transactionItems;
 
-    @Column(name = "transct_total")
-    private float totalCost;
-
-    @Column(name = "transct_paymentdate")
-    private Date purchaseDate;
-
-    @Column(name = "transct_dispatchdate")
-    private Date dispatchDate;
-
-    @Column(name = "transct_deliverydate")
-    private Date deliveryDate;
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    @JsonIgnoreProperties({"transactions"})
+    private User buyer;
 
     public Transaction() {}
 
@@ -48,28 +44,15 @@ public class Transaction {
         return transactionItems;
     }
 
+    public User getBuyer() {
+        return buyer;
+    }
+
+    /*
     public float getTotalCost() {
+        float totalcost = 0;
         return totalCost;
     }
-
-    public Date getPurchaseDate() {
-        return purchaseDate;
-    }
-
-    public Date getDispatchDate() {
-        return dispatchDate;
-    }
-
-    public void setDispatchDate(Date dispatchDate) {
-        this.dispatchDate = dispatchDate;
-    }
-
-    public Date getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(Date deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
+    */
    
 }

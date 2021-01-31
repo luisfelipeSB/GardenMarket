@@ -26,7 +26,7 @@ public class Advertisement {
     private User seller;
 
     @ManyToOne
-    @JoinColumn(name = "catg_id")
+    @JoinColumn(name = "catg_id")   // May be problematic, revise
     private AdCategory category;
 
     @Column(name = "ad_title")
@@ -39,19 +39,11 @@ public class Advertisement {
     private float price;
 
     @Column(name = "ad_isactive")
-    private boolean isActive;
+    private boolean active;
 
     public Advertisement() {}
 
-    public Advertisement(String category, String title, String description, float price) {
-        this.category = new AdCategory(category); // Isso não devia de ser assim
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.isActive = true;
-    }
-
-    public int getId() {
+	public int getId() {
         return id;
     }
 
@@ -88,10 +80,10 @@ public class Advertisement {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
     public void setActive(boolean isSold) {
-        this.isActive = isSold;
+        this.active = isSold;
     }
 }

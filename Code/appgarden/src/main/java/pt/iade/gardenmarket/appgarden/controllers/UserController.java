@@ -29,8 +29,9 @@ public class UserController {
         return userRepository.findAll();
     }
 
+    // Get one user
     @GetMapping(path = "/{id}", produces= MediaType.APPLICATION_JSON_VALUE)
-    public User getUnit(@PathVariable int id) {
+    public User getUser(@PathVariable int id) {
         logger.info("Sending user with id "+id);
         Optional<User> _user = userRepository.findById(id);
         if (_user.isEmpty()) throw new NotFoundException(""+id,"user","id");

@@ -5,14 +5,18 @@
     <title>GardenMarket</title>
     <link rel="stylesheet" href="stylesheets/index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="javascripts/listAdvertisements.js"></script>
+    <script src="javascripts/index.js"></script>
 </head>
 
 <body>
-    <header> Lista de Anúncios </header>
+    <header><h2>Lista de Anúncios</h2></header>
 
     <nav>
+        <a href="index.html">Home</a>
         <a href="insertAd.html">Adicionar Anúncio</a>
+        <a href="cart.html">Ver Carrinho</a>
+        <a href="purchases.html">Ver Compras</a>
+        <p id="sessionUser"></p>
     </nav>
 
     <section>
@@ -27,6 +31,8 @@
             <option value="Seeds">Seeds</option>
             <option value="Plants">Plants</option>
             <option value="Fertilizers">Fertilzers</option>
+            <option value="Natural product">Natural product</option>
+            <option value="Other">Other</option>
         </select>
         <input type="button" value="Filtrar" onclick="filterCategory()">
 
@@ -34,10 +40,9 @@
     </section>
 
     <main id="main">
-
     </main>
 
-    <footer> FOOTER </footer>
+    <footer>GardenMarket</footer>
 </body>
 
 </html>

@@ -1,5 +1,7 @@
 package pt.iade.gardenmarket.appgarden.models;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,37 +13,25 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Entity
-@Table(name = "transactionitems")
-public class TransactionItem {
+public class TransactionState {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "ts_id")
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "transct_id")
-    @JsonIgnoreProperties({"transactionItems"})
-    private Transaction transaction;  
-    
+    @JsonIgnoreProperties({"transactionStates"})
+    private Transaction transaction; 
+
     @ManyToOne
-    @JoinColumn(name = "ad_id")
-    @JsonIgnoreProperties({"seller"})
-    private Advertisement ad;  
+    @JoinColumn(name = "state_id")      // May be problematic; revise
+    private State state; 
 
-    public TransactionItem() {}
+    @Column(name = "ts_date")
+    private Date date;
 
-    public int getId() {
-        return id;
-    }
+    public TransactionState() {}
 
-    public Transaction getTransaction() {
-        return transaction;
-    }
-
-    public Advertisement getAd() {
-        return ad;
-    }
-    
 }

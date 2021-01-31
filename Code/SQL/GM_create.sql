@@ -12,9 +12,9 @@ create table users (usr_id int not null auto_increment,
                     primary key (usr_id));
                
 -- Possible ad categories in the platform
-create table categories(catg_id int not null auto_increment,
-						catg_name varchar(30),
-                        primary key (catg_id));
+create table adcategories(	catg_id int not null auto_increment,
+							catg_name varchar(30),
+							primary key (catg_id));
                         
 -- All user-created advertisements
 create table advertisements(ad_id int not null auto_increment,
@@ -24,38 +24,42 @@ create table advertisements(ad_id int not null auto_increment,
                             ad_description varchar(100),
                             ad_price decimal(7,2),
                             ad_isactive boolean,
-                            primary key (ad_id));
+                            primary key (ad_id),
+                            foreign key (sellr_id) references users(usr_id) 
+								ON DELETE NO ACTION ON UPDATE NO ACTION,
+							foreign key (catg_id) references adcategories(catg_id)
+								ON DELETE NO ACTION ON UPDATE NO ACTION);
+
+-- All user purchases or wishlists
+create table transactions(	transct_id int not null auto_increment,
+							buyer_id int,
+                            primary key (transct_id),
+                            foreign key (buyer_id) references users(usr_id)
+								ON DELETE NO ACTION ON UPDATE NO ACTION);
                             
--- Items from all user purchases AND Items from all user wishlists
-create table transactionitems( 	transct_id int,
-								item_id int not null auto_increment,
-								buyer_id int,
+-- Possible states of a transaction
+create table state( state_id int not null auto_increment,
+					state_name varchar(30),
+					primary key (state_id));
+                            
+-- Literal states of a transaction and its definition date
+create table transactionState(	ts_id int not null auto_increment,
+								transct_id int,
+                                state_id int,
+                                ts_date datetime not null,
+                                primary key (ts_id),
+                                foreign key (transct_id) references transactions(transct_id)
+									ON DELETE NO ACTION ON UPDATE NO ACTION,
+								foreign key (state_id) references state(state_id)
+									ON DELETE NO ACTION ON UPDATE NO ACTION);
+                            
+-- Items from all user purchases or wishlists
+create table transactionitems( 	item_id int not null auto_increment,
+								transct_id int,
 								ad_id int,
-								primary key (item_id));
-                        
--- All transaction information
-create table transactions (	transct_id int not null auto_increment,
-							transct_total decimal(7,2),
-                            transct_paymentdate datetime,
-                            transct_dispatchdate datetime,
-                            transct_deliverydate datetime,
-                            primary key (transct_id));
-
--- Foreign keys
-
-alter table advertisements add constraint 
-            foreign key (sellr_id) references users(usr_id) 
-			ON DELETE NO ACTION ON UPDATE NO ACTION;
-alter table advertisements add constraint 
-			foreign key (catg_id) references categories(catg_id)
-            ON DELETE NO ACTION ON UPDATE NO ACTION;
-            
-alter table transactionitems add constraint
-			foreign key (buyer_id) references users(usr_id)
-			ON DELETE NO ACTION ON UPDATE NO ACTION;
-alter table transactionitems add constraint
-			foreign key (ad_id) references advertisements(ad_id)
-			ON DELETE NO ACTION ON UPDATE NO ACTION;
-alter table transactionitems add constraint 
-            foreign key (transct_id) references transactions(transct_id) 
-			ON DELETE NO ACTION ON UPDATE CASCADE;
+								primary key (item_id),
+                                foreign key (transct_id) references transactions(transct_id)
+									ON DELETE NO ACTION ON UPDATE NO ACTION,
+								foreign key (ad_id) references advertisements(ad_id)
+									ON DELETE NO ACTION ON UPDATE NO ACTION);
+ 

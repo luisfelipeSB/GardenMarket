@@ -1,5 +1,6 @@
 package pt.iade.gardenmarket.appgarden.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -34,12 +35,12 @@ public class User {
     @OneToMany
     @JoinColumn(name = "sellr_id")
     @JsonIgnoreProperties({"seller"})
-    private List<Advertisement> ads;
+    private List<Advertisement> ads = new ArrayList<>();
 
     @OneToMany
-    @JoinColumn(name = "buyer_id")
+    @JoinColumn(name = "transct_id")
     @JsonIgnoreProperties({"buyer"})
-    private List<TransactionItem> transactionItems;
+    private List<Transaction> transactions;
 
     public User() {}
 
@@ -63,26 +64,12 @@ public class User {
         return ads;
     }
 
-    public List<TransactionItem> getTransactionItems() {
-        return transactionItems;
-    }
-
-    /*
-    public List<TransactionItem> getWishlist() {
-        ArrayList<TransactionItem> wishlist = new ArrayList<>();
-        for (TransactionItem item : transactionItems)
-            if (item.getId() == null) wishlist.add(item);
-        return wishlist;
-    }
-    */
-
-    /*
     public List<Transaction> getTransactions() {
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        for (TransactionItem item : transactionItems)
-            if (item.getId() != null) transactions.add(item);
         return transactions;
     }
-    */
+
+    public void setTransactions(Transaction t) {
+        transactions.add(t);
+    }
 
 }

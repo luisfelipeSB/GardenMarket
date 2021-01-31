@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.AdRepository;
+import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
 
 @RestController
 @RequestMapping(path = "/api/ads")
@@ -26,9 +29,9 @@ public class AdController {
     private AdRepository adRepository;
 
     // Get all ads
-    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "", produces= MediaType.APPLICATION_JSON_VALUE)
     public Iterable<Advertisement> getAds() {
-        logger.info("Sending all ads");
+        logger.info("Sending all advertisements");
         return adRepository.findAll();
     }
 
@@ -43,30 +46,32 @@ public class AdController {
             return _ad.get();
     }
 
+    // Get all active ads
+    @GetMapping(path = "/active", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Iterable<AdSummaryView> getActiveAds() {
+        logger.info("Sending all active ads");
+        return adRepository.findActiveAds();
+    }
+
     // Search for ads by title
     @GetMapping(path = "/filter_title", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<Advertisement> searchAdTitle(@RequestParam(value = "title", defaultValue = "") String title) {
-        logger.info("Sending ads with title: " + title);
-        ArrayList<Advertisement> ads = (ArrayList<Advertisement>) getAds();
-        ads.removeIf((a) -> !(a.getTitle().contains(title)));
-        return ads;
+    public Iterable<AdSummaryView> searchAdTitle(@RequestParam(value = "title", defaultValue = "") String titleKey) {
+        logger.info("Sending ads with title: " + titleKey);
+        return adRepository.findActiveAdsByTitle(titleKey);
     }
 
     // Search for ads by category
     @GetMapping(path = "/filter_category", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<Advertisement> searchAdCategory(
-            @RequestParam(value = "category", defaultValue = "") String category) {
-        logger.info("Sending ads with category: " + category);
-        ArrayList<Advertisement> ads = (ArrayList<Advertisement>) getAds();
-        ads.removeIf((a) -> !(a.getCategory().getName().contains(category)));
-        return ads;
+    public Iterable<AdSummaryView> searchAdCategory(@RequestParam(value = "category", defaultValue = "") String categoryKey) {
+        logger.info("Sending ads with category: " + categoryKey);
+        return adRepository.findActiveAdsByCategory(categoryKey);
     }
 
-    /*
     // Introduce an ad to the platform
     @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void insertAd(@RequestBody String title, @RequestBody String category, @RequestBody String description, @RequestBody float price) {
-        adRepository.insertAd(new Advertisement(title, category, description, price));
+    public Advertisement saveAd(@RequestBody Advertisement newAd) {
+        logger.info("Saving a new ad: " + newAd);
+        Advertisement ad = adRepository.save(newAd);
+        return ad;
     }
-    */
 }

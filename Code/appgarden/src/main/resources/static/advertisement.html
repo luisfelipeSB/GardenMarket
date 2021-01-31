@@ -12,14 +12,25 @@
 <body>
     <header id="title"> </header>
 
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="insertAd.html">Adicionar Anúncio</a>
+        <a href="cart.html">Ver Carrinho</a>
+        <a href="purchases.html">Ver Compras</a>
+        <!-- I'd like for the Signed in as to be dynamic -->
+        <p id="sessionUser">Signed in as <b>Johnny Test</b></p>
+    </nav>
+
     <main>
-        <h2>Anunciante: <span id="seller"> </span> </h2> <a href="seller.html"> (ver perfil) </a> <br> 
-        <h3>Categoria: <span id="category"> </span></h2>
+        <h2>Anunciante: <span id="seller"></span> </h2> 
+        <div id="sellerProfile"></div>
+        <h3>Categoria: <span id="category"></span> </h2>
         <h3>Descrição: </h3> <p id="description"></p>
-        <h3>Preço: <span id="price"> </span></h3>
+        <h3>Preço: €<span id="price"></span> </h3>
+        <button onclick="checkAdSeller()">Adicionar ao Carrinho</button>
     </main>
 
-    <footer> FOOTER </footer>
+    <footer>GardenMarket</footer>
 </body>
 
 </html>
