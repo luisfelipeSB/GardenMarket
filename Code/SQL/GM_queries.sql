@@ -139,3 +139,10 @@ WHERE ad_id IN (
 		WHERE t.transct_id = 12
 	) a
 ); 
+
+-- View all of a user's puchased items
+select a.ad_id, sellr_id, catg_id, ad_title, ad_description, ad_price, ad_isactive, t.transct_id, buyer_id
+from advertisements a
+inner join transactionitems ts on ts.ad_id = a.ad_id
+inner join transactions t on t.transct_id = ts.transct_id
+where t.buyer_id = 6 and a.ad_isactive = FALSE;

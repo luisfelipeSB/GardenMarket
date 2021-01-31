@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "states")
-public class State {       // Gostaria que isso fosse um Enum
+public class State {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

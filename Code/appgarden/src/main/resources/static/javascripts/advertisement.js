@@ -63,7 +63,7 @@ async function getCartTransaction(userId) {
 
     // Checking whether the user already has a cart
     let cartView = await $.ajax({
-        url: "api/transactions/user/" + parseInt(userId) + "/cart",
+        url: "api/transactions/user/" + userId + "/cart",
         method: "get",
         datatype: "json"
     });
@@ -80,10 +80,10 @@ async function getCartTransaction(userId) {
     } else {
         // If they don't, we create one for them, then send it to addToCart()
         let newCart = await $.ajax({
-            url: "/api/transactions/createCart/" + userId,
+            url: "/api/transactions/",
             method: "post",
             dataType: "json",
-            data: JSON.stringify(userId),       // sending this for no reason
+            data: JSON.stringify(userId),
             contentType: "application/json"
         });
         addToCart(newCart);

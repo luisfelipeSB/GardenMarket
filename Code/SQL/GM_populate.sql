@@ -103,12 +103,12 @@ insert into transactionitems (transct_id, ad_id) values (4, 6);	-- ad 6
 
 
 /*----- JOHNNY BUYS HIS ITEMS -----*/
-CALL create_cart(6);
-CALL update_ts(6, 2);
+-- CALL create_cart(6);
+-- CALL update_ts(6, 2);
 
 /*----- TEST QUERIES -----*/
 -- select * from adcategories;
 -- select * from advertisements;
-select * from transactions;
+-- select * from transactions;
 -- select * from transactionitems;
-select * from transactionstate;
+-- select * from transactionstate;

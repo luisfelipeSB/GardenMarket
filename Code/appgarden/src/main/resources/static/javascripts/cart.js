@@ -43,7 +43,7 @@ function showAds(ads) {
 async function purchase() {
     let userId = sessionStorage.getItem("sessionUserId");
     try {
-        let cart = await $.ajax({
+        let cartView = await $.ajax({
             url: "/api/transactions/user/" + userId + "/cart",
             method: "get",
             dataType: "json"
@@ -53,7 +53,7 @@ async function purchase() {
             url: "/api/transactions/update/" + 2,
             method: "post",
             dataType: "json",
-            data: JSON.stringify(cart),
+            data: JSON.stringify(cartView.transactionId),
             contentType: "application/json"
         });
         alert(JSON.stringify(result));

@@ -74,4 +74,12 @@ public class AdController {
         Advertisement ad = adRepository.save(newAd);
         return ad;
     }
+
+    @PostMapping(path = "/{i}/{c}/{t}/{d}/{p}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public int insertAd(@PathVariable("i") int sid, @PathVariable("c") int cid, 
+    @PathVariable("t") String title, @PathVariable("d") String descrp, @PathVariable("p") float price, @RequestBody Boolean active) {
+        logger.info("Saving a new ad: ");
+        return adRepository.insertAd(sid, cid, title, descrp, price);
+    }
+
 }

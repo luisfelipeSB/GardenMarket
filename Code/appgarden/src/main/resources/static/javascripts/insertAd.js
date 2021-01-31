@@ -6,22 +6,24 @@ async function insertAd() {
             method: "get",
             dataType: "json"
         });
+        console.log(user)
 
         catg = document.getElementById("categories")
         let ad = {
-            seller: user,
-            category: { id: catg.value, name: catg.options[catg.selectedIndex].text }, 
-            title: document.getElementById("title").value,
-            description: document.getElementById("description").value,
-            price: document.getElementById("price").value,
             active: true
         }
+        let sellerId = sessionStorage.getItem("sessionUserId")
+        let catgId = catg.value
+        let title = document.getElementById("title").value
+        let description = document.getElementById("description").value
+        let price = document.getElementById("price").value
+
         alert(JSON.stringify(ad));
         let result = await $.ajax({
-            url: "/api/ads",
+            url: "/api/ads/" + sellerId + "/" + catgId + "/" + title + "/" + description + "/" + price,
             method: "post",
             dataType: "json",
-            data: JSON.stringify(ad),
+            data: JSON.stringify(ad.active),
             contentType: "application/json"
         });
         alert(JSON.stringify(result));

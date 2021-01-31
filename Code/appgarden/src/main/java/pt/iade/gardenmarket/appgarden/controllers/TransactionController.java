@@ -47,13 +47,13 @@ public class TransactionController {
         else return _transct.get() ;
     }
 
-    // Creating a new shopping transaction, then setting it to cart state
+    /* Creating a new shopping transaction, then setting it to cart state
     @PostMapping(path = "/createCart/{uId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public int createCart(@RequestBody int userId, @PathVariable int uId) {
         return transctRepository.createCart(uId);
-    }
+    }*/
 
-    /* Creating a new shopping transaction, then setting it to cart state
+    // Creating a new shopping transaction, then setting it to cart state
     // The code in here needs to execute atomically
     @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public int createCart(@RequestBody int userId) {
@@ -73,7 +73,6 @@ public class TransactionController {
         StatelessTransactionView _transct = transctRepository.getStatelessTransaction(userId);
         return _transct.getTransactionId();
     }
-    */
 
     // Adding an item to a cart transaction
     // (creating a transactionItem and associating it with a transaction in cart state)
@@ -119,5 +118,13 @@ public class TransactionController {
     public int updateTS(@RequestBody int transctId, @PathVariable("statelvl") int statelvl) {
         logger.info("Updating transaction " + transctId + "to purchased state");
         return transctRepository.updateTS(transctId, statelvl);
+    }
+
+    // Getting a user's purchased items in AdSummaryView
+    @GetMapping(path = "/user/{userId}/purchases", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Iterable<AdSummaryView> getUserPurchases(@PathVariable("userId") int userId) {
+        logger.info("Sending a view of user " + userId + "'s purchases");
+        Iterable<AdSummaryView> purchases = transctRepository.getUserPurchases(userId);
+        return purchases;
     }
 }

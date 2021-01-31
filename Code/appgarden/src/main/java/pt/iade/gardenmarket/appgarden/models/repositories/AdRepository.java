@@ -1,8 +1,10 @@
 package pt.iade.gardenmarket.appgarden.models.repositories;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
@@ -28,4 +30,12 @@ public interface AdRepository extends CrudRepository<Advertisement, Integer> {
     @Query(value = adsByCategoryQuery, nativeQuery = true)
     Iterable<AdSummaryView> findActiveAdsByCategory(@Param("categoryKey") String categoryKey);
     
+    // Inserting an ad
+    String insertAdQuery = 
+    "INSERT INTO advertisements (sellr_id, catg_id, ad_title, ad_description, ad_price, ad_isactive) " +
+    "VALUES (:sid, :cid, :title, :descrp, :price, TRUE) ";
+    @Modifying
+    @Transactional
+    @Query(value=insertAdQuery, nativeQuery=true)
+	int insertAd(int sid, int cid, String title, String descrp, float price);
 }

@@ -17,14 +17,14 @@ import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 
     
-    // Creating a new cart transaction
+    /* Creating a new cart transaction
     String createCartQuery = 
     "CALL create_cart(:userId) ";
     @Modifying
     @Transactional
     @Query(value=createCartQuery, nativeQuery=true)
     int createCart(@Param("userId") int userId);
-
+    */
     // Updating a transaction's state
     String updateTransactionStateQuery =
     "CALL update_ts(:transctId, :stateId) ";
@@ -105,18 +105,23 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     Optional<TransactionStateView> getUserCartView(@Param("userId") int userId);
 
 
-    /*----- CART TRANSACTIONITEMS QUERIES -----*/
+    /*----- TRANSACTIONITEMS QUERIES -----*/
 
-    String cartAdSummariesQuery = 
+    String AdSummariesQuery = 
     "SELECT a.ad_id AS id, ad_title AS title, usr_name AS seller, ad_price AS price, catg_name AS category " +
     "FROM advertisements a " +
     "INNER JOIN users ON usr_id = a.sellr_id " +
     "INNER JOIN adcategories c ON c.catg_id = a.catg_id " +
     "INNER JOIN transactionitems ts ON ts.ad_id = a.ad_id " +
-    "INNER JOIN transactions t ON t.transct_id = ts.transct_id " +
+    "INNER JOIN transactions t ON t.transct_id = ts.transct_id ";
+
+    String cartAdSummariesQuery = AdSummariesQuery +
     "WHERE t.buyer_id = :buyerId AND a.ad_isactive = true ";
     @Query(value = cartAdSummariesQuery, nativeQuery = true)
     Iterable<AdSummaryView> getUserCartItems(@Param("buyerId") int buyerId);
 
-
+    String purchasesQuery = AdSummariesQuery +
+    "WHERE t.buyer_id = :buyerId AND a.ad_isactive = false ";
+    @Query(value = purchasesQuery, nativeQuery = true)
+    Iterable<AdSummaryView> getUserPurchases(@Param("buyerId") int buyerId);
 }
