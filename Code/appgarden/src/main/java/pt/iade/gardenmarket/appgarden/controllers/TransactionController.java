@@ -47,31 +47,10 @@ public class TransactionController {
         else return _transct.get() ;
     }
 
-    /* Creating a new shopping transaction, then setting it to cart state
+    // Creating a new shopping transaction, then setting it to cart state
     @PostMapping(path = "/createCart/{uId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public int createCart(@RequestBody int userId, @PathVariable int uId) {
         return transctRepository.createCart(uId);
-    }*/
-
-    // Creating a new shopping transaction, then setting it to cart state
-    // The code in here needs to execute atomically
-    @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public int createCart(@RequestBody int userId) {
-        logger.info("Saving a new transaction in cart state for user with id " + userId);
-        // Creating that transaction
-        int newTransct = transctRepository.createTransaction(userId);
-        // Getting that newly made transaction
-        int newTransctId = getStatelessTransaction(userId);   
-        // Registering a cart state entry in transactionStates for the new transaction
-        int newTS = transctRepository.setToCartState(newTransctId);
-        return newTransct;
-    }
-    // Getting one user's transaction(s) without an associated state
-    @GetMapping(path = "/stateless/user/{userId}", produces= MediaType.APPLICATION_JSON_VALUE)
-    public int getStatelessTransaction(@PathVariable int userId) {
-        logger.info("Sending stateless transaction from user with id " + userId);
-        StatelessTransactionView _transct = transctRepository.getStatelessTransaction(userId);
-        return _transct.getTransactionId();
     }
 
     // Adding an item to a cart transaction

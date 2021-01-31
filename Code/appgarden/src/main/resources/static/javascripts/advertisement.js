@@ -80,7 +80,7 @@ async function getCartTransaction(userId) {
     } else {
         // If they don't, we create one for them, then send it to addToCart()
         let newCart = await $.ajax({
-            url: "/api/transactions/",
+            url: "/api/transactions/createCart/" + userId,
             method: "post",
             dataType: "json",
             data: JSON.stringify(userId),

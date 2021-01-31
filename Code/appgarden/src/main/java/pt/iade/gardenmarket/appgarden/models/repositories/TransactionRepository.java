@@ -16,15 +16,14 @@ import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
 
-    
-    /* Creating a new cart transaction
+    // Creating a new cart transaction
     String createCartQuery = 
     "CALL create_cart(:userId) ";
     @Modifying
     @Transactional
     @Query(value=createCartQuery, nativeQuery=true)
     int createCart(@Param("userId") int userId);
-    */
+    
     // Updating a transaction's state
     String updateTransactionStateQuery =
     "CALL update_ts(:transctId, :stateId) ";
