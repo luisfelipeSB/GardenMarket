@@ -1,18 +1,26 @@
 window.onload = async function() {
+    loadSeller()    
+}
+
+// Loadeing seller
+async function loadSeller() {
+
     let sellerId = sessionStorage.getItem("sellerId");
 
     let seller = await $.ajax({
-        url: "/api/users/"+sellerId,
+        url: "/api/users/" + sellerId,
         method: "get",
         dataType: "json"
-    });
-    console.log(seller);
+    })
+    console.log(seller)
+    document.getElementById("sellerName").innerHTML = seller.name
 
-    document.getElementById("sellerName").innerHTML = seller.name;
     showAds(seller.ads)
 }
 
-function showAds(ads) {
+// Showing seller's ads
+async function showAds(ads) {
+    
     let elemMain = document.getElementById("ads");
     let html = "";
     for (let ad of ads) {
@@ -29,6 +37,7 @@ function showAds(ads) {
     elemMain.innerHTML = html;
 }
 
+// Redirecting user to one ad's page
 function showAd(adId) {
     sessionStorage.setItem("adId", adId);
     window.location = "advertisement.html";

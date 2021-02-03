@@ -20,7 +20,6 @@ import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.TransactionRepository;
 import pt.iade.gardenmarket.appgarden.models.repositories.UserRepository;
 import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
-import pt.iade.gardenmarket.appgarden.models.views.StatelessTransactionView;
 import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 
 @RestController
@@ -47,15 +46,9 @@ public class TransactionController {
         else return _transct.get() ;
     }
 
-    // Creating a new shopping transaction, then setting it to cart state
-    @PostMapping(path = "/createCart/{uId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public int createCart(@RequestBody int userId, @PathVariable int uId) {
-        return transctRepository.createCart(uId);
-    }
-
     // Adding an item to a cart transaction
     // (creating a transactionItem and associating it with a transaction in cart state)
-    @PostMapping(path = "/{id}/addToCart", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/cart/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public int addToCart(@PathVariable int id, @RequestBody Advertisement ad) {
         logger.info("Saving ad: " + ad + " to cart: " + id);
         logger.info(ad.toString());
@@ -75,35 +68,10 @@ public class TransactionController {
         return transctRepository.getStateView(id);
     }
 
-    // Getting a view of a user's cart transaction, if they have one
-    @GetMapping(path = "/user/{userId}/cart", produces = MediaType.APPLICATION_JSON_VALUE)  // THIS MAY RETURN NULL
-    public Optional<TransactionStateView> getUserCart(@PathVariable("userId") int userId) {
-        logger.info("Sending a view of user " + userId + "'s cart");
-        Optional<TransactionStateView> cartView = transctRepository.getUserCartView(userId);
-        logger.info(cartView.toString());
-        return cartView;
-    }
-
-    // Getting one user's cart transactionItems in AdSummaryView
-    @GetMapping(path = "/user/{userId}/cartItems", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<AdSummaryView> getUserCartItems(@PathVariable("userId") int userId) {
-        logger.info("Sending a view of user " + userId + "'s cart items");
-        Iterable<AdSummaryView> cartItems = transctRepository.getUserCartItems(userId);
-        return cartItems;
-    }
-
     // Updating a transactionstate
     @PostMapping(path = "/update/{statelvl}", produces = MediaType.APPLICATION_JSON_VALUE)
     public int updateTS(@RequestBody int transctId, @PathVariable("statelvl") int statelvl) {
         logger.info("Updating transaction " + transctId + "to purchased state");
         return transctRepository.updateTS(transctId, statelvl);
-    }
-
-    // Getting a user's purchased items in AdSummaryView
-    @GetMapping(path = "/user/{userId}/purchases", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<AdSummaryView> getUserPurchases(@PathVariable("userId") int userId) {
-        logger.info("Sending a view of user " + userId + "'s purchases");
-        Iterable<AdSummaryView> purchases = transctRepository.getUserPurchases(userId);
-        return purchases;
     }
 }

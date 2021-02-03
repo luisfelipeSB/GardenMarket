@@ -21,7 +21,7 @@ public interface AdRepository extends CrudRepository<Advertisement, Integer> {
     Iterable<AdSummaryView> findActiveAds();
 
     // Getting ads based on title as search key
-    String adsByTitleQuery = activeAdsQuery + "AND ad_title like %:titleKey% ";
+    String adsByTitleQuery = activeAdsQuery + "AND ad_title LIKE %:titleKey% ";
     @Query(value = adsByTitleQuery, nativeQuery = true)
     Iterable<AdSummaryView> findActiveAdsByTitle(@Param("titleKey") String titleKey);
 

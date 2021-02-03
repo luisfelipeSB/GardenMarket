@@ -107,7 +107,8 @@ select * from
 	where usr_id = 6
 	group by t.transct_id
 ) a
-where statelvl = 1;
+where statelvl = 1
+limit 1;
 
 -- View one user's transactions without an associated state 
 select t.transct_id as id, buyer_id as buyerId from transactions t
@@ -143,6 +144,30 @@ WHERE ad_id IN (
 -- View all of a user's puchased items
 select a.ad_id, sellr_id, catg_id, ad_title, ad_description, ad_price, ad_isactive, t.transct_id, buyer_id
 from advertisements a
-inner join transactionitems ts on ts.ad_id = a.ad_id
-inner join transactions t on t.transct_id = ts.transct_id
+inner join transactionitems ti on ti.ad_id = a.ad_id
+inner join transactions t on t.transct_id = ti.transct_id
 where t.buyer_id = 6 and a.ad_isactive = FALSE;
+
+-- Checking if an ad is active
+SELECT ad_isactive FROM advertisements
+WHERE ad_id = 9;
+
+-- Checking whether an ad is from a given user
+SELECT count(*) AS from_user FROM advertisements
+INNER JOIN users ON sellr_id = usr_id
+WHERE ad_id = 1 AND usr_id = 6;
+
+-- Checking if an ad is already in a user's cart
+SELECT count(*) AS already_in_cart FROM advertisements a
+INNER JOIN transactionitems ti ON ti.ad_id = a.ad_id
+INNER JOIN transactions t ON t.transct_id = ti.transct_id
+INNER JOIN transactionstate ts ON ts.transct_id = t.transct_id
+INNER JOIN users u ON u.usr_id = t.buyer_id
+WHERE a.ad_id = 1 AND u.usr_id = 6;
+
+
+
+
+
+
+

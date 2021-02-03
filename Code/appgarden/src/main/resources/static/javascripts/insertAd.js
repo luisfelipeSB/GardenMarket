@@ -1,34 +1,30 @@
 async function insertAd() {
+
     try {
 
-        let user = await $.ajax({
-            url: "/api/users/" + sessionStorage.getItem("sessionUserId"),
-            method: "get",
-            dataType: "json"
-        });
-        console.log(user)
-
-        catg = document.getElementById("categories")
-        let ad = {
+        // Constructing the new advertisement
+        let newAd = {
+            seller: { id: sessionStorage.getItem("sessionUserId") },
+            category: { id: document.getElementById("categories").value },
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            price: document.getElementById("price").value,
             active: true
         }
-        let sellerId = sessionStorage.getItem("sessionUserId")
-        let catgId = catg.value
-        let title = document.getElementById("title").value
-        let description = document.getElementById("description").value
-        let price = document.getElementById("price").value
+        console.log(JSON.stringify(newAd))
 
-        alert(JSON.stringify(ad));
+        // Sending new ad to server
         let result = await $.ajax({
-            url: "/api/ads/" + sellerId + "/" + catgId + "/" + title + "/" + description + "/" + price,
+            url: "/api/ads/",
             method: "post",
             dataType: "json",
-            data: JSON.stringify(ad.active),
+            data: JSON.stringify(newAd),
             contentType: "application/json"
         });
-        alert(JSON.stringify(result));
+        if(result) alert("Anúncio inserido com sucesso!")
+        
     } catch (err) {
         console.log(err);
-        // mensagem para o utilizador
+        alert("Não foi possível inserir o anúncio. Tente novamente mais tarde.")
     }
 }

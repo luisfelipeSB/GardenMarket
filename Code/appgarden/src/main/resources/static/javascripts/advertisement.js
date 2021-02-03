@@ -1,118 +1,114 @@
 window.onload = async function () {
+    loadAdvertisement()
+}
 
+// Loading the advertisement
+async function loadAdvertisement() {
     try {
-        let adId = sessionStorage.getItem("adId");
+        let adID = sessionStorage.getItem("adId")
         let ad = await $.ajax({
-            url: "/api/ads/" + adId,
+            url: "/api/ads/" + adID,
             method: "get",
             dataType: "json"
-        });
-        console.log(ad);
-
-        document.getElementById("title").innerHTML = "<h2>" + ad.title + "</h2>";
-        document.getElementById("seller").innerHTML = ad.seller.name;
-        document.getElementById("category").innerHTML = ad.category.name;
-        document.getElementById("description").innerHTML = ad.description;
-        document.getElementById("price").innerHTML = ad.price;
-
-        document.getElementById("sellerProfile").innerHTML = "<input type='button' " +
-            "value='ver perfil' onclick='showProfile(" + ad.seller.id + ")'>";
+        })
+        console.log(ad)
+        fillPage(ad)
     } catch (err) {
         console.log(err)
     }
 }
 
+// Filling in page with the ad information
+function fillPage(ad) {
+    document.getElementById("title").innerHTML = "<h2>" + ad.title + "</h2>"
+    document.getElementById("seller").innerHTML = ad.seller.name
+    document.getElementById("sellerProfile").innerHTML = "<input type='button' " +
+        "value='Ver Perfil' onclick='showProfile(" + ad.seller.id + ")'>"
+
+    document.getElementById("category").innerHTML = ad.category.name
+    document.getElementById("description").innerHTML = ad.description
+    document.getElementById("price").innerHTML = ad.price
+
+    document.getElementById("addToCart").innerHTML = "<input type='button' " +
+        "value='Adicionar ao Carrinho' onclick='verifyAd()'>"
+}
+
+// Redirecting user to the seller's profile page
 function showProfile(sellerId) {
     sessionStorage.setItem("sellerId", sellerId);
     window.location = "seller.html";
 }
 
-// To add an item to a user's cart, we 1) check whether theyre trying to buy their own ad, 
-// 2) check whether they already have a cart; if they do, we add it to that cart
-// Otherwise, we create a cart for them, then add the ad to it.
+// Verifying if the ad can be added to the user's cart
+async function verifyAd() {
 
-async function checkAdSeller() {
+    let userID = sessionStorage.getItem("sessionUserId")
 
-    let adId = sessionStorage.getItem("adId");
-    let ad = await $.ajax({
-        url: "/api/ads/" + adId,
-        method: "get",
-        dataType: "json"
-    });
-
-    // Getting the user
-    let userId = sessionStorage.getItem("sessionUserId");
-    let user = await $.ajax({
-        url: "/api/users/" + userId,
-        method: "get",
-        dataType: "json"
-    });
-    console.log(user);
-
-    // Checking whether the user is trying to buy their own item ALSO CHECK WHETHER THE ITEM THEY'RE BUYING IS INACTIVE
-    if (ad.seller.id == userId) {
-        alert("Oops! Não é permitido comprar vosso próprio anúncio.")
-    } else {
-        // If it's not their own ad, we begin the process of adding it to their cart
-        getCartTransaction(userId)
+    // Reloading ad
+    let ad
+    try {
+        let adID = sessionStorage.getItem("adId")
+        ad = await $.ajax({
+            url: "/api/ads/" + adID,
+            method: "get",
+            dataType: "json"
+        })
+        console.log(ad)
+    } catch (err) {
+        console.log(err)
     }
 
-}
-
-async function getCartTransaction(userId) {
-
-    // Checking whether the user already has a cart
-    let cartView = await $.ajax({
-        url: "api/transactions/user/" + userId + "/cart",
-        method: "get",
-        datatype: "json"
-    });
-    console.log(cartView);      // cartView is _ if there is no cart
-
-    if (cartView != null) {
-        // If they do, we get that cart and send it to addToCart()
-        let cart = await $.ajax({
-            url: "api/transactions/" + cartView.transactionId,
+    // Loading user's cart
+    let cartView
+    try {
+        cartView = await $.ajax({
+            url: "/api/users/" + userID + "/cart",
             method: "get",
-            datatype: "json"
-        });
-        addToCart(cart);
+            dataType: "json"
+        })
+        console.log(cartView)
+    } catch (err) {
+        console.log(err)
+    }
+
+    // If the user has a cart, add the ad to it
+    if (cartView != null) {
+        try {
+            let result = await $.ajax({
+                url: "api/ads/" + ad.id + "/verification?buyerId=" + userID,
+                method: "get",
+                dataType: "json",
+                contentType: "application/json"
+            })
+            if (result) addToCart(ad, cartView)
+            else alert("Ops! Não será possível adicionar este item ao carrinho.")
+        } catch(err) {
+            console.log(err)
+        }
     } else {
-        // If they don't, we create one for them, then send it to addToCart()
-        let newCart = await $.ajax({
-            url: "/api/transactions/createCart/" + userId,
+        // If the user does not have a cart, create one for them, and call the function again
+        await $.ajax({
+            url: "/api/users/" + userID + "/cart",
             method: "post",
             dataType: "json",
-            data: JSON.stringify(userId),
             contentType: "application/json"
-        });
-        addToCart(newCart);
+        })
+        verifyAd()
     }
 }
 
-async function addToCart(cart) {
+// Adding ad to user's cart
+async function addToCart(ad, cart) {
 
-    console.log(cart.id)
-
-    let adId = sessionStorage.getItem("adId");
-    let ad = await $.ajax({
-        url: "/api/ads/" + adId,
-        method: "get",
-        dataType: "json"
-    });
-
-    console.log(JSON.stringify(ad.id))
-
-    // Having received the cart, and knowing what ad to ad to it, we call the post method
     try {
         let result = await $.ajax({
-            url: "/api/transactions/" + cart.id + "/addToCart",
+            url: "/api/transactions/cart/" + cart.transactionId,
             method: "post",
             dataType: "json",
             data: JSON.stringify({ id: ad.id }),
             contentType: "application/json"
         });
-        alert(JSON.stringify(result));
+        if (result) alert("Item guardado no carrinho!")
     } catch (err) {
         console.log(err);
         alert("Ops! Não foi possível adicionar item ao carrinho. Tente novamente mais tarde.")

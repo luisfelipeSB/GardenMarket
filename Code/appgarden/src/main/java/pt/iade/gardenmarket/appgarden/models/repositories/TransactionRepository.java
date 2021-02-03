@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.Transaction;
 import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
-import pt.iade.gardenmarket.appgarden.models.views.StatelessTransactionView;
 import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 
 public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
@@ -31,37 +30,6 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     @Transactional
     @Query(value=updateTransactionStateQuery, nativeQuery=true)
     int updateTS(@Param("transctId") int transctId, @Param("stateId") int stateId);
-
-    /*----- CART TRANSACTION QUERIES -----*/
-    
-    // Creating a new transaction
-    String createTransactionQuery =
-    "INSERT INTO transactions (buyer_id) VALUES (:userId); ";
-    @Modifying
-    @Transactional
-    @Query(value=createTransactionQuery, nativeQuery=true)
-    int createTransaction(@Param("userId") int userId);
-
-    // Getting one user's stateless latest transaction
-    String statelessTransactionQuery = 
-    "SELECT t.transct_id as transactionId, buyer_id as buyerId FROM transactions t " +
-    "LEFT JOIN transactionstate ts " +
-    "ON t.transct_id = ts.transct_id " +
-    "WHERE ts.transct_id IS NULL " +
-    "AND buyer_id = :buyerIdKey " +
-    "LIMIT 1 ";
-    @Transactional
-    @Query(value=statelessTransactionQuery, nativeQuery=true)
-    StatelessTransactionView getStatelessTransaction(@Param("buyerIdKey") int buyerIdKey);
-    
-    // Setting a transaction to cart state
-    String setToCartStateQuery =
-    "INSERT INTO transactionstate (transct_id, state_id, ts_date) " +
-    "VALUES (:transctId , 1, sysdate()) ";
-    @Modifying
-    @Transactional
-    @Query(value=setToCartStateQuery, nativeQuery=true)
-    int setToCartState(@Param("transctId") int transctId);
 
     // Adding an ad to a cart given transaction and ad ids
     String addToCartQuery =
@@ -98,7 +66,7 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     // Getting a user's cart transaction, if they have one
     String userCartQuery = 
     "SELECT * FROM (" +  allUserTransactionStatesQuery + ") a " +
-    "WHERE statelvl = 1";
+    "WHERE statelvl = 1 LIMIT 1 ";
     @Transactional
     @Query(value=userCartQuery, nativeQuery=true)
     Optional<TransactionStateView> getUserCartView(@Param("userId") int userId);
@@ -122,5 +90,5 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     String purchasesQuery = AdSummariesQuery +
     "WHERE t.buyer_id = :buyerId AND a.ad_isactive = false ";
     @Query(value = purchasesQuery, nativeQuery = true)
-    Iterable<AdSummaryView> getUserPurchases(@Param("buyerId") int buyerId);
+    Iterable<AdSummaryView> getUserPurchaseItems(@Param("buyerId") int buyerId);
 }

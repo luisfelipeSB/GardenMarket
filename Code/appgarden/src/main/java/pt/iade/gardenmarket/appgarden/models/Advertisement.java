@@ -26,7 +26,7 @@ public class Advertisement {
     private User seller;
 
     @ManyToOne
-    @JoinColumn(name = "catg_id")   // May be problematic, revise
+    @JoinColumn(name = "catg_id")   
     private AdCategory category;
 
     @Column(name = "ad_title")

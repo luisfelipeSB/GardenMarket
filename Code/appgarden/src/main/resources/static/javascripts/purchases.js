@@ -2,11 +2,13 @@ window.onload = function () {
     loadAdvertisements();
 }
 
+// Loading all advertisements purchased by the user
 async function loadAdvertisements() {
+
     let userId = sessionStorage.getItem("sessionUserId");
     try {
         let ads = await $.ajax({
-            url: "/api/transactions/user/" + userId + "/purchases",
+            url: "/api/users/" + userId + "/purchaseItems",
             method: "get",
             dataType: "json"
         });
@@ -21,14 +23,16 @@ async function loadAdvertisements() {
     }
 }
 
+// Showing purchased ads
 function showAds(ads) {
+    
     let elemMain = document.getElementById("main");
     let html = "";
     let subtotal = 0;
     for (let ad of ads) {
         subtotal += ad.price
         html +=
-            "<section onclick='showAd(" + ad.id + ")'>" +
+            "<section>" +
                 "<h3>" + ad.title + "</h3>" +
                 "<p>Anunciante: " + ad.seller + "</p>" +
                 "<p>Preço: €" + ad.price + "</p>" +

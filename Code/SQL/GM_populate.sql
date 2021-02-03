@@ -14,9 +14,9 @@ values 	("Produce"),
 		("Seeds"),
         ("Plants"),
         ("Fertilizers"),
-        ("Natural product"),
+        ("Natural-product"),
         ("Other");
-
+        
 insert into advertisements (sellr_id, catg_id, ad_title, ad_description, ad_price, ad_isactive) 
 values 	(1, 1, "Homegrown Pumpkins", "Vibrant", 7.50, true),
 		(1, 4, "Compost", "Top quality", 12.50, true),
@@ -41,7 +41,7 @@ values 	("CART"),
         ("DELIVERED");
 
 
-/*----- ALICE's TRIP -----*/
+/*----- ALICE's TRIP -----/
 -- Alice adds items to her cart
 insert into transactions (buyer_id) values (1);					-- transct 1
 insert into transactionstate (transct_id, state_id, ts_date)	-- set to cart state
@@ -63,7 +63,7 @@ insert into transactionstate (transct_id, state_id, ts_date)
 	values (1, 4, sysdate());
     
 
-/*----- BOB's TRIP -----*/
+/*----- BOB's TRIP -----/
 -- Bob adds items to his cart
 insert into transactions (buyer_id) values (2);					-- transct 2
 insert into transactionstate (transct_id, state_id, ts_date)	-- set to cart state
@@ -80,7 +80,7 @@ insert into transactionstate (transct_id, state_id, ts_date)
 	values (2, 3, sysdate());
 
 
-/*----- CAROL's TRIP -----*/
+/*----- CAROL's TRIP -----/
 -- Carol adds items to her cart
 insert into transactions (buyer_id) values (3);					-- transct 3
 insert into transactionstate (transct_id, state_id, ts_date)	-- set to cart state
@@ -94,7 +94,7 @@ insert into transactionstate (transct_id, state_id, ts_date)
 update advertisements set ad_isActive = false where ad_id = 2 or ad_id = 4;
 
 
-/*----- ALICE's SECOND TRIP -----*/
+/*----- ALICE's SECOND TRIP -----/
 -- Alice adds items to her cart
 insert into transactions (buyer_id) values (1);					-- transct 4
 insert into transactionstate (transct_id, state_id, ts_date)	-- set to cart state
@@ -102,13 +102,16 @@ insert into transactionstate (transct_id, state_id, ts_date)	-- set to cart stat
 insert into transactionitems (transct_id, ad_id) values (4, 6);	-- ad 6
 
 
-/*----- JOHNNY BUYS HIS ITEMS -----*/
--- CALL create_cart(6);
+/*----- JOHNNY BUYS HIS ITEMS -----/
+CALL create_cart(6);
+insert into transactionitems (transct_id, ad_id) values (9, 9);	-- ad 6
+
+select * from advertisements where ad_isactive = true;
 -- CALL update_ts(6, 2);
 
 /*----- TEST QUERIES -----*/
--- select * from adcategories;
--- select * from advertisements;
--- select * from transactions;
--- select * from transactionitems;
--- select * from transactionstate;
+select * from adcategories;
+select * from advertisements;
+select * from transactions;
+select * from transactionitems;
+select * from transactionstate;
