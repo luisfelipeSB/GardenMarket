@@ -43,7 +43,7 @@ create table state( state_id int not null auto_increment,
 					primary key (state_id));
                             
 -- Literal states of a transaction and its definition date
-create table transactionState(	ts_id int not null auto_increment,
+create table transactionstate(	ts_id int not null auto_increment,
 								transct_id int,
                                 state_id int,
                                 ts_date datetime not null,

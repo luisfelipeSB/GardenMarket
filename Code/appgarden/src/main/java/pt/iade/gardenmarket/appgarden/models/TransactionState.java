@@ -24,7 +24,7 @@ public class TransactionState {
     private Transaction transaction; 
 
     @ManyToOne
-    @JoinColumn(name = "state_id")      // May be problematic; revise
+    @JoinColumn(name = "state_id")
     private State state; 
 
     @Column(name = "ts_date")

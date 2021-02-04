@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.Transaction;
-import pt.iade.gardenmarket.appgarden.models.TransactionState;
 import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.TransactionRepository;
-import pt.iade.gardenmarket.appgarden.models.repositories.UserRepository;
-import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
 import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 
 @RestController

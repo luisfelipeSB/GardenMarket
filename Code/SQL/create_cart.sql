@@ -10,7 +10,8 @@ BEGIN
     SET @tid = (
 		SELECT t.transct_id FROM transactions t
 		LEFT JOIN transactionstate ts ON t.transct_id = ts.transct_id
-		WHERE ts.transct_id IS NULL AND buyer_id = bid LIMIT 1
+		WHERE ts.transct_id IS NULL AND buyer_id = bid
+        GROUP BY t.transct_id LIMIT 1
     );
     
     -- Inserting a cart state entry for the assigned GM transaction in transactionstate

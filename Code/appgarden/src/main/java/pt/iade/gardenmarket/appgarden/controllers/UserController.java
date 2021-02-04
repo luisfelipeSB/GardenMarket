@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pt.iade.gardenmarket.appgarden.models.Transaction;
 import pt.iade.gardenmarket.appgarden.models.User;
 import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.TransactionRepository;
