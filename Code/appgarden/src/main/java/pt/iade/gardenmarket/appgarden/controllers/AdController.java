@@ -19,7 +19,6 @@ import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.AdCategoryRepository;
 import pt.iade.gardenmarket.appgarden.models.repositories.AdRepository;
-import pt.iade.gardenmarket.appgarden.models.repositories.TransactionRepository;
 import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
 
 @RestController
@@ -31,8 +30,6 @@ public class AdController {
     private AdRepository adRepository;
     @Autowired
     private AdCategoryRepository adCatgRepository;
-    @Autowired
-    private TransactionRepository transctRepository;
 
     // Get all ads
     @GetMapping(path = "", produces= MediaType.APPLICATION_JSON_VALUE)
@@ -82,45 +79,11 @@ public class AdController {
         }
     }
 
-    // Search for ads by title
-    @GetMapping(path = "/active/title", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<AdSummaryView> searchAdTitle(@RequestParam(value = "t", defaultValue = "") String titleKey) {
-        logger.info("Sending ads with title: " + titleKey);
-        return adRepository.findActiveAdsByTitle(titleKey);
-    }
-
-    // Search for ads by category
-    @GetMapping(path = "/active/category", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<AdSummaryView> searchAdCategory(@RequestParam(value = "c", defaultValue = "") String categoryKey) {
-        logger.info("Sending ads with category: " + categoryKey);
-        return adRepository.findActiveAdsByCategory(categoryKey);
-    }
-
     // Introduce an ad to the platform
     @PostMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public Advertisement saveAd(@RequestBody Advertisement newAd) {
         logger.info("Saving a new ad: " + newAd);
         Advertisement ad = adRepository.save(newAd);
         return ad;
-    }
-
-    // Verifying whether an ad can be added to a user's cart
-    @GetMapping(path = "/{id}/verification", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean certifyAd(@PathVariable("id") int id, @RequestParam(value = "buyerId", defaultValue = "") int buyerId) {
-        logger.info("Verifying that ad " + id + " can be added to transaction " + buyerId);
-        Advertisement ad = getAd(id);
-        Iterable<AdSummaryView> cartItems = transctRepository.getUserCartItems(buyerId);
-
-        // Checking if the ad is active, and if the user is not also the seller
-        if (ad.isActive() && ad.getSeller().getId() != buyerId) {    
-            
-            // Checking if the ad is in the user's cart already
-            for (AdSummaryView item : cartItems) 
-                if (ad.getId() == item.getId()) return false;
-            
-            return true;
-        } else {
-            return false;
-        }
     }
 }

@@ -29,8 +29,10 @@ function fillPage(ad) {
     document.getElementById("description").innerHTML = ad.description
     document.getElementById("price").innerHTML = ad.price
 
-    document.getElementById("addToCart").innerHTML = "<input type='button' " +
-        "value='Adicionar ao Carrinho' onclick='verifyAd()'>"
+    if (ad.active) {
+        document.getElementById("addToCart").innerHTML = 
+            "<input type='button' value='Adicionar ao Carrinho' onclick='addToCart()'>"
+    }   
 }
 
 // Redirecting user to the seller's profile page
@@ -40,7 +42,7 @@ function showProfile(sellerId) {
 }
 
 // Verifying if the ad can be added to the user's cart
-async function verifyAd() {
+async function addToCart() {
 
     let userID = sessionStorage.getItem("sessionUserId")
 
@@ -57,6 +59,9 @@ async function verifyAd() {
     } catch (err) {
         console.log(err)
     }
+    // The server has trouble deserializing a seller's transactions for some reason
+    // So we remove it - the information is not used anyway (not an ideal solution)
+    delete ad.seller["transactions"]
 
     // Loading user's cart
     let cartView
@@ -75,15 +80,17 @@ async function verifyAd() {
     if (cartView != null) {
         try {
             let result = await $.ajax({
-                url: "api/ads/" + ad.id + "/verification?buyerId=" + userID,
-                method: "get",
+                url: "/api/transactions/cart/" + cartView.transactionId,
+                method: "post",
                 dataType: "json",
+                data: JSON.stringify(ad),
                 contentType: "application/json"
             })
-            if (result) addToCart(ad, cartView)
-            else alert("Ops! Não será possível adicionar este item ao carrinho.")
-        } catch(err) {
+            if (result) alert("Item guardado no carrinho!")
+            else alert("Ops! Não será possível adicionar item ao carrinho.")
+        } catch (err) {
             console.log(err)
+            alert("Ops! Não foi possível adicionar item ao carrinho. Tente novamente mais tarde.")
         }
     } else {
         // If the user does not have a cart, create one for them, and call the function again
@@ -93,24 +100,6 @@ async function verifyAd() {
             dataType: "json",
             contentType: "application/json"
         })
-        verifyAd()
-    }
-}
-
-// Adding ad to user's cart
-async function addToCart(ad, cart) {
-
-    try {
-        let result = await $.ajax({
-            url: "/api/transactions/cart/" + cart.transactionId,
-            method: "post",
-            dataType: "json",
-            data: JSON.stringify({ id: ad.id }),
-            contentType: "application/json"
-        });
-        if (result) alert("Item guardado no carrinho!")
-    } catch (err) {
-        console.log(err);
-        alert("Ops! Não foi possível adicionar item ao carrinho. Tente novamente mais tarde.")
+        addToCart()
     }
 }

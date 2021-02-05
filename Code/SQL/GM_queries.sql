@@ -165,8 +165,15 @@ INNER JOIN transactionstate ts ON ts.transct_id = t.transct_id
 INNER JOIN users u ON u.usr_id = t.buyer_id
 WHERE a.ad_id = 1 AND u.usr_id = 6;
 
-
-
+-- Getting all of one user's purchased items with transaction id
+SELECT t.transct_id AS transactionId, ts_date AS purchaseDate, a.ad_id AS id, a.ad_title AS title, u.usr_name AS buyer, a.sellr_id AS seller, a.ad_price AS price, c.catg_name AS category
+FROM advertisements a
+INNER JOIN adcategories c ON a.catg_id = c.catg_id
+INNER JOIN transactionitems ti ON ti.ad_id = a.ad_id
+INNER JOIN transactions t ON t.transct_id = ti.transct_id
+INNER JOIN transactionstate ts ON ts.transct_id = t.transct_id
+INNER JOIN users u ON u.usr_id = t.buyer_id
+WHERE u.usr_id = 6 AND ts.state_id >= 2 AND ts.state_id <= 4;
 
 
 

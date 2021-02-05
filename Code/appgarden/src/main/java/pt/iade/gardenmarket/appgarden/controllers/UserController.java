@@ -17,6 +17,7 @@ import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.TransactionRepository;
 import pt.iade.gardenmarket.appgarden.models.repositories.UserRepository;
 import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
+import pt.iade.gardenmarket.appgarden.models.views.PurchasedAdSummaryView;
 import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 
 @RestController
@@ -69,9 +70,17 @@ public class UserController {
     }
 
     // Getting one user's purchased items
+    @GetMapping(path = "{id}/purchasedItems", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Iterable<PurchasedAdSummaryView> getUserPurchasedItems(@PathVariable("id") int id) {
+        logger.info("Sending a view of user " + id + "'s purchase items");
+        Iterable<PurchasedAdSummaryView> purchases = transctRepository.getUserPurchasedItems(id);
+        return purchases;
+    }
+
+    // Getting one user's purchased items
     @GetMapping(path = "{id}/purchaseItems", produces = MediaType.APPLICATION_JSON_VALUE)
     public Iterable<AdSummaryView> getUserPurchaseItems(@PathVariable("id") int id) {
-        logger.info("Sending a view of user " + id + "'s purchase items");
+        logger.info("Sending a view of user " + id + "'s purchased items");
         Iterable<AdSummaryView> purchases = transctRepository.getUserPurchaseItems(id);
         return purchases;
     }

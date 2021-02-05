@@ -17,6 +17,7 @@ import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.Transaction;
 import pt.iade.gardenmarket.appgarden.models.exceptions.NotFoundException;
 import pt.iade.gardenmarket.appgarden.models.repositories.TransactionRepository;
+import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
 import pt.iade.gardenmarket.appgarden.models.views.TransactionStateView;
 
 @RestController
@@ -44,18 +45,26 @@ public class TransactionController {
     }
 
     // Adding an item to a cart transaction
-    // (creating a transactionItem and associating it with a transaction in cart state)
+    // 1) Verifying whether an ad can be added to a user's cart and
+    // 2) creating a transactionItem and associating it with a transaction in cart state
     @PostMapping(path = "/cart/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public int addToCart(@PathVariable int id, @RequestBody Advertisement ad) {
-        logger.info("Saving ad: " + ad + " to cart: " + id);
-        logger.info(ad.toString());
+        TransactionStateView cart = getTransactionCurrentState(id);
+        logger.info("Saving ad: " + ad.getId() + " to cart: " + id);
 
-        // Verifying that the transaction received is in cart state
-        if (getTransactionCurrentState(id).getStateLvl() == 1)
+        // Checking if the ad is active, if the user is not also the seller, and if the transaction is in cart state
+        if (ad.isActive() && ad.getSeller().getId() != cart.getBuyerId() && cart.getStateLvl() == 1) {    
+            
+            // Checking if the ad is in the user's cart already
+            for (AdSummaryView item : transctRepository.getUserCartItems(cart.getBuyerId())) 
+                if (ad.getId() == item.getId()) return 0;
+            
             // Adding item to cart
-            return transctRepository.addToCart(id, ad);
-        else
-            return 132;
+            logger.info("Success");
+            return transctRepository.addToCart(id, ad.getId());
+        } else {
+            return 0;
+        }
     }
 
     // Getting a view of a transaction's current state

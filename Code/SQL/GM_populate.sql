@@ -110,7 +110,6 @@ select * from advertisements where ad_isactive = true;
 -- CALL update_ts(6, 2);
 
 /*----- TEST QUERIES -----*/
-select * from adcategories;
 select * from advertisements;
 select * from transactions;
 select * from transactionitems;
