@@ -76,12 +76,4 @@ public class UserController {
         Iterable<PurchasedAdSummaryView> purchases = transctRepository.getUserPurchasedItems(id);
         return purchases;
     }
-
-    // Getting one user's purchased items
-    @GetMapping(path = "{id}/purchaseItems", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Iterable<AdSummaryView> getUserPurchaseItems(@PathVariable("id") int id) {
-        logger.info("Sending a view of user " + id + "'s purchased items");
-        Iterable<AdSummaryView> purchases = transctRepository.getUserPurchaseItems(id);
-        return purchases;
-    }
 }

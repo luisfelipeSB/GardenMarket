@@ -12,7 +12,7 @@ async function loadAdvertisements() {
             method: "get",
             dataType: "json"
         });
-        showAds2(purchasedAds);
+        showAds(purchasedAds);
 
     } catch (err) {
         let elemMain = document.getElementById("main");
@@ -24,38 +24,42 @@ async function loadAdvertisements() {
 }
 
 // Showing purchased ads
-function showAds2(ads) {
+function showAds(ads) {
 
     let elemMain = document.getElementById("main")
     let t = []
     for (let ad of ads)
         t.push(ad.transactionId)
     let transactions = unique(t)
-    console.log(transactions)
+    console.log(transactions.length)
 
     let html = "";
-    for (let t of transactions) {
-        html += "<section class='transaction'>"
-        let subtotal = 0
-        let purchaseDate
-        for (let ad of ads) {
-            purchaseDate = ad.purchaseDate
-            if (ad.transactionId == t) {
-                subtotal += ad.price
-                html +=
-                    "<section>" +
-                    "<h3>" + ad.title + "</h3>" +
-                    "<p>Anunciante: " + ad.seller + "</p>" +
-                    "<p>Preço: €" + ad.price + "</p>" +
-                    "<p>Categoria: " + ad.category + "</p>" +
-                    "</section>"
+    if (transactions.length == 0) html += "<h2>Nenhuma compra efetuada</h3>"
+    else {
+        for (let t of transactions) {
+            html += "<section class='transaction'>"
+            let subtotal = 0
+            let purchaseDate
+            for (let ad of ads) {
+                if (ad.transactionId == t) {
+                    purchaseDate = ad.purchaseDate
+                    transctState = ad.state
+                    subtotal += ad.price
+                    html +=
+                        "<section>" +
+                        "<h3>" + ad.title + "</h3>" +
+                        "<p>Anunciante: " + ad.seller + "</p>" +
+                        "<p>Preço: €" + ad.price + "</p>" +
+                        "<p>Categoria: " + ad.category + "</p>" +
+                        "</section>"
+                }
             }
+            html += "<br> <h3>Data de pagamento: " + purchaseDate + "</h3>"
+            html += "<br> <h3>Estado da compra: " + transctState + "</h3>"
+            html += "<br> <h3>Total de Gastos: €" + subtotal + "</h3> "
+            html += "</section>"
         }
-        html += "<br> <h3>Data de pagamento: " + purchaseDate + "</h3>"
-        html += "<br> <h3>Total de Gastos: €" + subtotal + "</h3> "
-        html += "</section>"
-    }
-    console.log(html)
+    }    
     elemMain.innerHTML = html
 }
 
@@ -63,25 +67,4 @@ function unique(a) {
     return a.sort().filter(function(item, pos, ary) {
         return !pos || item != ary[pos - 1];
     })
-}
-
-// Showing purchased ads
-function showAds(ads) {
-
-    let elemMain = document.getElementById("main");
-    let html = "";
-    let subtotal = 0;
-    for (let ad of ads) {
-        subtotal += ad.price
-        html +=
-            "<section>" +
-            "<h3>" + ad.title + "</h3>" +
-            "<p>Anunciante: " + ad.seller + "</p>" +
-            "<p>Preço: €" + ad.price + "</p>" +
-            "<p>Categoria: " + ad.category + "</p>" +
-            "</section>";
-    }
-    html +=
-        "<br> <h3>Total de Gastos: €" + subtotal + "</h3> "
-    elemMain.innerHTML = html;
 }

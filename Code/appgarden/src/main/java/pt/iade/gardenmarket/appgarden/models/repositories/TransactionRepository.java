@@ -8,7 +8,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import pt.iade.gardenmarket.appgarden.models.Advertisement;
 import pt.iade.gardenmarket.appgarden.models.Transaction;
 import pt.iade.gardenmarket.appgarden.models.views.AdSummaryView;
 import pt.iade.gardenmarket.appgarden.models.views.PurchasedAdSummaryView;
@@ -39,6 +38,14 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     @Transactional
     @Query(value=addToCartQuery, nativeQuery=true)
     int addToCart(@Param("transctId") int transctId, @Param("adId") int adId);
+
+    // Removing an item from a cart given transaction and ad ids
+    String removeFromCartQuery =
+    "DELETE FROM transactionitems WHERE transct_id = :transctId AND ad_id = :adId";
+    @Modifying
+    @Transactional
+    @Query(value=removeFromCartQuery, nativeQuery=true)
+    int removeFromCart(@Param("transctId") int transctId, @Param("adId") int adId); 
 
 
     /*----- TRANSACTION STATE QUERIES -----*/
@@ -94,14 +101,17 @@ public interface TransactionRepository extends CrudRepository<Transaction, Integ
     Iterable<AdSummaryView> getUserPurchaseItems(@Param("buyerId") int buyerId);
 
     String PurchasedAdSummariesQuery = 
-    "SELECT t.transct_id AS transactionId, ts_date AS purchaseDate, a.ad_id AS id, a.ad_title AS title, u.usr_name AS buyer, a.sellr_id AS seller, a.ad_price AS price, c.catg_name AS category " +
+    "SELECT t.transct_id AS transactionId, ts_date AS purchaseDate, s.state_name AS state, " + 
+            "a.ad_id AS id, a.ad_title AS title, u.usr_name AS buyer, a.sellr_id AS seller, "+
+            "a.ad_price AS price, c.catg_name AS category " +
     "FROM advertisements a " +
     "INNER JOIN adcategories c ON a.catg_id = c.catg_id " +
     "INNER JOIN transactionitems ti ON ti.ad_id = a.ad_id " +
     "INNER JOIN transactions t ON t.transct_id = ti.transct_id " +
     "INNER JOIN transactionstate ts ON ts.transct_id = t.transct_id " +
+    "INNER JOIN state s ON s.state_id = ts.state_id " +
     "INNER JOIN users u ON u.usr_id = t.buyer_id " +
-    "WHERE u.usr_id = :buyerId AND ts.state_id >= 2 AND ts.state_id <= 4 ";
+    "WHERE u.usr_id = :buyerId AND ts.state_id BETWEEN 2 AND 4 ";
     @Query(value = PurchasedAdSummariesQuery, nativeQuery = true)
     Iterable<PurchasedAdSummaryView> getUserPurchasedItems(@Param("buyerId") int buyerId);
 }

@@ -10,11 +10,13 @@ where usr_id = sellr_id and c.catg_id = a.catg_id
 and ad_isactive = true;
 
 -- Active ads view filtered by title
-select ad_id as id, ad_title as title, usr_name as seller, ad_price as price, catg_name as category
+EXPLAIN select ad_id as id, ad_title as title, usr_name as seller, ad_price as price, catg_name as category
 from advertisements a, users, adcategories c
 where usr_id = sellr_id and c.catg_id = a.catg_id
 and ad_isactive = true
 and ad_title like '%Garden%';
+
+CREATE INDEX search_filtered_ads ON advertisements (ad_title, catg_id);
 
 -- Active ads view filtered by category
 select ad_id as id, ad_title as title, usr_name as seller, ad_price as price, catg_name as category
@@ -166,14 +168,15 @@ INNER JOIN users u ON u.usr_id = t.buyer_id
 WHERE a.ad_id = 1 AND u.usr_id = 6;
 
 -- Getting all of one user's purchased items with transaction id
-SELECT t.transct_id AS transactionId, ts_date AS purchaseDate, a.ad_id AS id, a.ad_title AS title, u.usr_name AS buyer, a.sellr_id AS seller, a.ad_price AS price, c.catg_name AS category
+SELECT t.transct_id AS transactionId, ts_date AS purchaseDate, s.state_name AS state, a.ad_id AS id, a.ad_title AS title, u.usr_name AS buyer, a.sellr_id AS seller, a.ad_price AS price, c.catg_name AS category
 FROM advertisements a
 INNER JOIN adcategories c ON a.catg_id = c.catg_id
 INNER JOIN transactionitems ti ON ti.ad_id = a.ad_id
 INNER JOIN transactions t ON t.transct_id = ti.transct_id
 INNER JOIN transactionstate ts ON ts.transct_id = t.transct_id
+INNER JOIN state s ON s.state_id = ts.state_id
 INNER JOIN users u ON u.usr_id = t.buyer_id
-WHERE u.usr_id = 6 AND ts.state_id >= 2 AND ts.state_id <= 4;
+WHERE u.usr_id = 6 AND ts.state_id BETWEEN 2 AND 4;
 
 
 

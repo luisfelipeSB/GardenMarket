@@ -44,14 +44,14 @@ function showProfile(sellerId) {
 // Verifying if the ad can be added to the user's cart
 async function addToCart() {
 
-    let userID = sessionStorage.getItem("sessionUserId")
+    let userId = sessionStorage.getItem("sessionUserId")
 
     // Reloading ad
     let ad
     try {
-        let adID = sessionStorage.getItem("adId")
+        let adId = sessionStorage.getItem("adId")
         ad = await $.ajax({
-            url: "/api/ads/" + adID,
+            url: "/api/ads/" + adId,
             method: "get",
             dataType: "json"
         })
@@ -67,7 +67,7 @@ async function addToCart() {
     let cartView
     try {
         cartView = await $.ajax({
-            url: "/api/users/" + userID + "/cart",
+            url: "/api/users/" + userId + "/cart",
             method: "get",
             dataType: "json"
         })
@@ -95,7 +95,7 @@ async function addToCart() {
     } else {
         // If the user does not have a cart, create one for them, and call the function again
         await $.ajax({
-            url: "/api/users/" + userID + "/cart",
+            url: "/api/users/" + userId + "/cart",
             method: "post",
             dataType: "json",
             contentType: "application/json"

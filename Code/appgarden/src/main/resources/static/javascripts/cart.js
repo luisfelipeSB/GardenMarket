@@ -29,14 +29,16 @@ function showAds(ads) {
     for (let ad of ads) {
         subtotal += ad.price
         html +=
-            "<section onclick='showAd(" + ad.id + ")'>" +
-                "<h3>" + ad.title + "</h3>" +
-                "<p>Anunciante: " + ad.seller + "</p>" +
-                "<p>Preço: €" + ad.price + "</p>" +
-                "<p>Categoria: " + ad.category + "</p>" +
-            "</section>";
+            "<section>" +
+            "<h3>" + ad.title + "</h3>" +
+            "<p>Anunciante: " + ad.seller + "</p>" +
+            "<p>Preço: €" + ad.price + "</p>" +
+            "<p>Categoria: " + ad.category + "</p>" +
+            "<input type='button' value='Ver Anúncio' onclick='showAd(" + ad.id + ")'>" +
+            "<input type='button' value='Remover' onclick='removeItem(" + ad.id + ")'>"
+        "</section>";
     }
-    html += 
+    html +=
         "<br> <h3>Subtotal: €" + subtotal + "</h3> "
     elemMain.innerHTML = html;
 }
@@ -47,30 +49,74 @@ function showAd(adId) {
     window.location = "advertisement.html";
 }
 
-// Purchasing the ads
-async function purchase() {
-    let userId = sessionStorage.getItem("sessionUserId");
+// Removing one ad from cart
+async function removeItem(adId) {
+
+    let userId = sessionStorage.getItem("sessionUserId")
+    console.log(userId)
+    // Loading user's cart
+    let cartView
     try {
-        let cartView = await $.ajax({
+        cartView = await $.ajax({
             url: "/api/users/" + userId + "/cart",
             method: "get",
             dataType: "json"
         })
-
-        // 2 is the state id for "PURCHASED"
-        let result = await $.ajax({
-            url: "/api/transactions/update/" + 2,
-            method: "post",
-            dataType: "json",
-            data: JSON.stringify(cartView.transactionId),
-            contentType: "application/json"
-        })
-        if (result > 1) alert("Itens comprados com sucesso!")
     } catch (err) {
-        let elemMain = document.getElementById("main")
         console.log(err)
-        elemMain.innerHTML =
-            "<h1> Página não está disponível</h1> <br>" +
-            "<h2> Por favor tente mais tarde</h2>"
+    }
+    console.log(cartView)
+
+    // Removing cart item
+    try {
+        let result = await $.ajax({
+            url: "/api/transactions/cart/" + cartView.transactionId + "/" + adId,
+            method: "delete",
+            dataType: "json"
+        })
+        console.log(result)
+        if (result) {
+            alert("Item removido do carrinho")
+            location.reload()
+        } else {
+            alert("Não foi possível remover o item do carrinho. Tente novamente mais tarde.")
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+// Purchasing the ads
+async function purchase() {
+
+    if (confirm("Efetuar compra?")) {
+        let userId = sessionStorage.getItem("sessionUserId");
+        try {
+            let cartView = await $.ajax({
+                url: "/api/users/" + userId + "/cart",
+                method: "get",
+                dataType: "json"
+            })
+
+            // 2 is the state id for "PURCHASED"
+            let result = await $.ajax({
+                url: "/api/transactions/update/" + 2,
+                method: "post",
+                dataType: "json",
+                data: JSON.stringify(cartView.transactionId),
+                contentType: "application/json"
+            })
+
+            if (result != 0) {
+                alert("Itens comprados com sucesso!")
+                window.location = "purchases.html";
+            }
+        } catch (err) {
+            let elemMain = document.getElementById("main")
+            console.log(err)
+            elemMain.innerHTML =
+                "<h1> Página não está disponível</h1> <br>" +
+                "<h2> Por favor tente mais tarde</h2>"
+        }
     }
 }

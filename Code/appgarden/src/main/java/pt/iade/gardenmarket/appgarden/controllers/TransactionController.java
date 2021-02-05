@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,7 +51,7 @@ public class TransactionController {
     @PostMapping(path = "/cart/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public int addToCart(@PathVariable int id, @RequestBody Advertisement ad) {
         TransactionStateView cart = getTransactionCurrentState(id);
-        logger.info("Saving ad: " + ad.getId() + " to cart: " + id);
+        logger.info("Saving ad " + ad.getId() + " to cart " + id);
 
         // Checking if the ad is active, if the user is not also the seller, and if the transaction is in cart state
         if (ad.isActive() && ad.getSeller().getId() != cart.getBuyerId() && cart.getStateLvl() == 1) {    
@@ -66,6 +67,16 @@ public class TransactionController {
             return 0;
         }
     }
+
+    // Removing an item from a cart transaction
+    @DeleteMapping(path = "/cart/{id}/{adId}", produces = MediaType.APPLICATION_JSON_VALUE )
+    public int removeFromCart(@PathVariable("id") int id, @PathVariable("adId") int adId){
+        logger.info("Removing ad " + adId + " from cart " + id);
+                
+        return transctRepository.removeFromCart(id, adId);
+    }
+
+
 
     // Getting a view of a transaction's current state
     @GetMapping(path = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
